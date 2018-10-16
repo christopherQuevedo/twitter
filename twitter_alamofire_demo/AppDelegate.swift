@@ -24,6 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController = loginViewController
         }
         
+        if (User.current != nil) {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let tweetsNavigationController = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController")
+            self.window?.rootViewController = tweetsNavigationController
+        }
+        
         // MARK: TODO: Check for logged in user
         
         return true

@@ -38,7 +38,7 @@ class APIManager: SessionManager {
                 if let error = error {
                     failure(error)
                 } else if let user = user {
-                    print("Welcome \(user.name ?? "trash")")
+                    print("Welcome \(user.name)")
                     
                     // MARK: TODO: set User.current, so that it's persisted
                     User.current = user
@@ -71,7 +71,8 @@ class APIManager: SessionManager {
     func getHomeTimeLine(completion: @escaping ([Tweet]?, Error?) -> ()) {
         // This uses tweets from disk to avoid hitting rate limit. Comment out if you want fresh
         // tweets,
-        /*
+        
+        
         if let data = UserDefaults.standard.object(forKey: "hometimeline_tweets") as? Data {
             let tweetDictionaries = NSKeyedUnarchiver.unarchiveObject(with: data) as! [[String: Any]]
             let tweets = tweetDictionaries.flatMap({ (dictionary) -> Tweet in
@@ -81,28 +82,22 @@ class APIManager: SessionManager {
             completion(tweets, nil)
             return
         }
-*/
+        
+        
         request(URL(string: "https://api.twitter.com/1.1/statuses/home_timeline.json")!, method: .get)
             .validate()
-            .responseJSON {
-                (response) in
-                print("A")
+            .responseJSON { (response) in
                 switch response.result {
                 case .failure(let error):
-                    print("A")
                     completion(nil, error)
-                    print("A")
                     return
                 case .success:
-                    print("B")
                     guard let tweetDictionaries = response.result.value as? [[String: Any]] else {
                         print("Failed to parse tweets")
                         let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Failed to parse tweets"])
                         completion(nil, error)
-                        print("B")
                         return
                     }
-                    print("C")
                     let data = NSKeyedArchiver.archivedData(withRootObject: tweetDictionaries)
                     UserDefaults.standard.set(data, forKey: "hometimeline_tweets")
                     UserDefaults.standard.synchronize()
@@ -111,20 +106,48 @@ class APIManager: SessionManager {
                         Tweet(dictionary: dictionary)
                     })
                     completion(tweets, nil)
-                    print("C")
                 }
         }
-        print("help")
- 
     }
     
     // MARK: TODO: logout
-    
-    static func logout(){
+    func logout(){
         User.current = nil
         APIManager.shared.clearCredentials()
         NotificationCenter.default.post(name: NSNotification.Name("didLogout"), object: nil)
     }
+    
+    func favorite(_ tweet: Tweet, completion: @escaping (Tweet?, Error?) -> ()) {
+        let urlString = "https://api.twitter.com/1.1/favorites/create.json"
+        let parameters = ["id": tweet.id]
+        request(urlString, method: .post, parameters: parameters, encoding: URLEncoding.queryString).validate().responseJSON { (response) in
+            if response.result.isSuccess,
+                let tweetDictionary = response.result.value as? [String: Any] {
+                let tweet = Tweet(dictionary: tweetDictionary)
+                completion(tweet, nil)
+            } else {
+                completion(nil, response.result.error)
+            }
+        }
+    }
+    
+    func retweet(_ tweet: Tweet, completion: @escaping (Tweet?, Error?) -> ()) {
+        let parameters = ["id": tweet.id]
+        let id = parameters["id"]!
+        let urlString = "https://api.twitter.com/1.1/statuses/retweet/\(id!).json"
+        
+        request(urlString, method: .post, parameters: parameters, encoding: URLEncoding.queryString).validate().responseJSON { (response) in
+            if response.result.isSuccess,
+                let tweetDictionary = response.result.value as? [String: Any] {
+                let tweet = Tweet(dictionary: tweetDictionary)
+                completion(tweet, nil)
+            } else {
+                completion(nil, response.result.error)
+            }
+        }
+    }
+    
+    
  
     // MARK: TODO: Favorite a Tweet
     
@@ -148,7 +171,7 @@ class APIManager: SessionManager {
     var oauthManager: OAuth1Swift!
     
     // Private init for singleton only
-     init() {
+      private init() {
         super.init()
         
         // Create an instance of OAuth1Swift with credentials and oauth endpoints

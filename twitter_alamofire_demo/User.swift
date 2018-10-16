@@ -50,21 +50,26 @@ class User {
         userid = twitid.int64Value
     }
     
-    static var current: User?
-    /*
+    static var _current: User?
     static var current: User? {
         get{
             let defaults = UserDefaults.standard
             if let userData = defaults.data(forKey: "currentUserData"){
-                let dictionary = try! JSONSerialization.data(withJSONObject: userData, options: [])
-                defaults.set(userData, forKey: "currentUserData")
+                let dictionary = try! JSONSerialization.jsonObject(with: userData, options: []) as! [String: Any]
+                return User(dictionary: dictionary)
+            }
+            return nil
+        }
+        set(user){
+            let defaults = UserDefaults.standard
+            if let user = user {
+                let data = try! JSONSerialization.data(withJSONObject: user.dictionary, options: [])
+                defaults.set(data, forKey: "currentUserData")
             }
             else{
                 defaults.removeObject(forKey: "currentUserData")
             }
         }
     }
- */
-    
-    
+ 
 }
