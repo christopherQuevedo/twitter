@@ -69,6 +69,6 @@ List an 3rd party libraries, icons, graphics, or other assets you used in your a
     See the License for the specific language governing permissions and
     limitations under the License.
 
-<img src='https://imgur.com/RbJ3O9X.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://imgur.com/NyW6ZJK.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 
