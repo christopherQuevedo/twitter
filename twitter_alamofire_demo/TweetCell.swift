@@ -15,7 +15,6 @@ class TweetCell: UITableViewCell {
     @IBOutlet weak var proPic: UIImageView!
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var username: UILabel!
-    @IBOutlet weak var date: UILabel!
     @IBOutlet weak var tweetText: UILabel!
     @IBOutlet weak var retweets: UILabel!
     @IBOutlet weak var likes: UILabel!
@@ -37,7 +36,7 @@ class TweetCell: UITableViewCell {
             username.text = tweet?.user.screenName
             tweetText.text = tweet?.text
             retweets.text = String(tweet!.retweetCount)
-            likes.text = String(tweet!.favoriteCount!)
+            likes.text = String(tweet!.favoriteCount)
         }
     }
     

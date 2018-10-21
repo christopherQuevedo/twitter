@@ -40,7 +40,7 @@ class User {
         friendcount = dictionary["friends_count"] as? Int
         followercount = dictionary["followers_count"] as? Int
         userid = dictionary["userid"] as? Int64
-        statuscount = dictionary["status_count"] as? Int
+        statuscount = dictionary["statuses_count"] as? Int
         favoritecount = dictionary["favourite_count"] as? Int
         
         guard let twitid: NSNumber = dictionary["id"] as? NSNumber else {

@@ -63,16 +63,34 @@ class TimelineViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     
-    /*
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let cell = sender as! UITableViewCell
-        if let indexPath = tableView.indexPath(for: cell){
-            let tweet = tweets[indexPath.row]
-            let detailViewController = segue.destination as! DetailViewController
-            detailViewController.tweet = tweet
+        print("trying a segue")
+        if(segue.identifier == "detailSegue"){
+            print("trying to get detail")
+            let cell = sender as! UITableViewCell
+            if let indexPath = tableView.indexPath(for: cell){
+                let tweet = tweets[indexPath.row]
+                let detailViewController = segue.destination as! DetailViewController
+                detailViewController.tweet = tweet
+            }
+        }
+        else if(segue.identifier == "userSegue"){
+            print("trying to view profile")
+            let user = User.current
+            let userViewController = segue.destination as! UserViewController
+            userViewController.user = user
+        }
+        else if(segue.identifier == "composeSegue"){
+            print("trying to compose")
+            let user = User.current
+            let composeViewController = segue.destination as! ComposeViewController
+            composeViewController.user = user
         }
     }
-    */
+    
+    
+    
 
     /*
     // MARK: - Navigation
